@@ -6,6 +6,8 @@ import socket
 import threading
 import os
 import sys
+import socket
+import random
 
 
 # Global variable to keep track of active connections
@@ -80,14 +82,29 @@ def main(port):
     active_connections = 0
 
     # Create a socket object
-    serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
 
-    host = socket.gethostbyname(socket.gethostname())
-    serverSocket.bind((host, port))
+        serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    # Now wait for client connection.
-    serverSocket.listen(5)
-    print(f"SERVER STARTED Actively Listening on {host}:{port}")
+        host = socket.gethostbyname(socket.gethostname())
+        serverSocket.bind((host, port))
+
+        # Now wait for client connection.
+        serverSocket.listen(5)
+        print(f"SERVER STARTED Actively Listening on {host}:{port}")
+
+    except Exception as e:
+        print("{} is already in use".format(port))
+        print("choosing random port")
+        port = random.randint(1025, 65535)
+        serverSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        host = socket.gethostbyname(socket.gethostname())
+        serverSocket.bind((host, port))
+
+        # Now wait for client connection.
+        serverSocket.listen(5)
+        print(f"SERVER STARTED Actively Listening on {host}:{port}")
 
     while True:
         # Establish connection with client.
